@@ -1,0 +1,2 @@
+python update_monitor_new.py
+pause
