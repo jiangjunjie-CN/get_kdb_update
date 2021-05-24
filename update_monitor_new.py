@@ -468,9 +468,12 @@ def main_test(ori, mine, ifsend_mail=True, ifupdate=True):
         app.display_alerts = True
 
         # 检查更新文件是否存在
-        updateFile = check_dir()
-        wb_m = app.books.open(os.path.join(os.getcwd(), 'main_update_content.xlsx'))
-        wb_u = app.books.open(updateFile) if updateFile else app.books.add(updateFile)
+        try:
+            updateFile = check_dir()
+            wb_m = app.books.open(os.path.join(os.getcwd(), 'main_update_content.xlsx'))
+            wb_u = app.books.open(updateFile) if updateFile else app.books.add(updateFile)
+        except Exception:
+            logger.error('未找到更新主文件/更新记录文件')
 
         # 在专门的excel文件中写入更新/新增/删除内容
         write_excel_update(wb_u, mer2)
@@ -499,7 +502,7 @@ def main_test(ori, mine, ifsend_mail=True, ifupdate=True):
         logger.info('本次无更新/新增/删除内容')
 
     if ifsend_mail and update_status:
-        send_mail(receivers='only', update_items=update_explain, del_items=del_explain, insert_items=insert_explain,
+        send_mail(receivers='both', update_items=update_explain, del_items=del_explain, insert_items=insert_explain,
                   table_path=os.path.join(os.getcwd(), 'main_update_content.xlsx'))
 
 
